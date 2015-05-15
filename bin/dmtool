@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+require 'dmtool'
+
+parser = DMTool::Parser.new
+print 'dmtool > '
+while str = gets.chomp
+  break if str == ''
+  puts parser.parse(str)
+  print 'dmtool > '
+end
+
