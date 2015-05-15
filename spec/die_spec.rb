@@ -20,6 +20,10 @@ describe DMTool::Die do
     let(:die) { DMTool::Die.new(sides: 4) }
     let(:exploder) { DMTool::Die.new(sides: 2, explodes: true) }
 
+    it 'should respond to :roll' do
+      expect(die.respond_to? :roll).to be true
+    end
+
     it 'should never have a maximum value greater than 4' do
       max = (1..50).map { die.roll }.max
       expect(max).to be <= 4

@@ -22,15 +22,6 @@ class DMTool::Die
     rand(1..sides)
   end
 
-  def explode
-    result = roll
-    while result % sides == 0 do
-      result += roll
-    end
-    result
-  end
-
   alias explodes? explodes
   alias roll! roll
-  alias explode! explode
 end
