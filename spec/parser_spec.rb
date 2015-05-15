@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 describe DMTool::Parser do
-  let(:parser) { DMTool::Parser.new 'roll 3d6' }
-  let(:bad_parser) { DMTool::Parser.new 'eat 3d6' }
-  let(:implicit) { DMTool::Parser.new 'roll d6' }
+  let(:parser) { DMTool::Parser.new }
   describe '#parse!' do
     it 'responds to :parse! and :parse' do
       expect(parser.respond_to? :parse!).to eq true
@@ -12,11 +10,11 @@ describe DMTool::Parser do
 
     it 'calls :roll when told to roll' do
       expect(parser).to receive(:roll)
-      parser.parse!
+      parser.parse!('roll 2d6')
     end
 
     it 'raises an error when it doesn\'t understand' do
-      expect { bad_parser.parse! }.to raise_error(ParserError)
+      expect { parser.parse!('eat 3d6') }.to raise_error(ParserError)
     end
   end
 

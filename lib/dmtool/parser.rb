@@ -1,11 +1,12 @@
 class DMTool::Parser
-  attr_reader :input
-  def initialize(input=nil)
-    @input = input
+  attr_reader :history
+  def initialize
+    @history = []
   end
 
-  def parse!(in_str=input)
-    command, options = in_str.split(/ /, 2)
+  def parse!(input)
+    history.push input
+    command, options = input.split(/ /, 2)
     case command
     when 'roll'
       roll options
