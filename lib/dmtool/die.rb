@@ -15,13 +15,12 @@ class DMTool::Die
     result
   end
 
+  alias explodes? explodes
+  alias roll! roll
 
   private
 
   def rand_roll
     rand(1..sides)
   end
-
-  alias explodes? explodes
-  alias roll! roll
 end

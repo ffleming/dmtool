@@ -1,7 +1,7 @@
 class DMTool::FudgeDie
   attr_reader :history
   SIDES = [DMTool::Result::Success, DMTool::Result::NilResult, DMTool::Result::Failure]
-  def initialize
+  def initialize(opts={})
     @history = []
   end
 
@@ -10,9 +10,6 @@ class DMTool::FudgeDie
     history.push result
     result
   end
-
-
-  private
 
   alias roll! roll
 end

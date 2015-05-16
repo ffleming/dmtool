@@ -13,11 +13,11 @@ end
 
 shared_examples_for 'a failure' do
   let(:result) { described_class }
-  it 'should be a success' do
+  it 'should not be a success' do
     expect(result.success?).to eq false
   end
 
-  it 'should not be a failure' do
+  it 'should be a failure' do
     expect(result.failure?).to eq true
   end
 end
@@ -31,7 +31,7 @@ end
 
 shared_examples_for 'a non-critical' do
   let(:result) { described_class }
-  it 'should be a critical' do
+  it 'should not be a critical' do
     expect(result.critical?).to eq false
   end
 end
@@ -49,16 +49,34 @@ describe DMTool::Result do
       expect(c).to be_a(DMTool::Result)
     end
   end
+
+  it 'should assign integer values correctly' do
+    expect((crit_constants + non_crit_constants).shuffle.sort).to eq [
+      DMTool::Result::CriticalFailure,
+      DMTool::Result::Failure,
+      DMTool::Result::NilResult,
+      DMTool::Result::Success,
+      DMTool::Result::CriticalSuccess
+    ]
+  end
 end
 
 describe DMTool::Result::Success do
   it_behaves_like 'a success'
   it_behaves_like 'a non-critical'
+
+  it 'should symbolize to :success' do
+    expect(subject.to_sym).to eq :success
+  end
 end
 
 describe DMTool::Result::Failure do
   it_behaves_like 'a failure'
   it_behaves_like 'a non-critical'
+
+  it 'should symbolize to :failure' do
+    expect(subject.to_sym).to eq :failure
+  end
 end
 
 describe DMTool::Result::NilResult do
@@ -66,6 +84,10 @@ describe DMTool::Result::NilResult do
   it 'should be neither failure nor success' do
     expect(subject.success?).to eq false
     expect(subject.failure?).to eq false
+  end
+
+  it 'should symbolize to :nil_result' do
+    expect(subject.to_sym).to eq :nil_result
   end
 end
 
@@ -75,6 +97,10 @@ describe DMTool::Result::CriticalSuccess do
   it 'should be a critical success' do
     expect(subject.critical_success?).to eq true
   end
+
+  it 'should symbolize to :critical_success' do
+    expect(subject.to_sym).to eq :critical_success
+  end
 end
 
 describe DMTool::Result::CriticalFailure do
@@ -82,6 +108,10 @@ describe DMTool::Result::CriticalFailure do
   it_behaves_like 'a critical'
   it 'should be a critical failure' do
     expect(subject.critical_failure?).to eq true
+  end
+
+  it 'should symbolize to :critical_failure' do
+    expect(subject.to_sym).to eq :critical_failure
   end
 end
 

@@ -1,17 +1,42 @@
 class DMTool::Parser::DiceString
-  attr_reader :string, :dice
+  attr_reader :string, :type, :number, :sides
   def initialize(string)
     @string = string
     validate_format!
-    @dice   = parse_dice
+    parse_string
+  end
+
+  def dice
+    opts = {
+      fudge:      nil,
+      standard:  { sides: sides },
+      exploding: { sides: sides, exploding: true }
+    }
+    options = opts[type]
+    (1..number).map { CLASSES[type].new(options) }
   end
 
   private
 
-  def parse_dice
-    num, type, sides = regex.match(string).captures
-    num = 1 if num == ''
-    (1..num.to_i).map { DMTool::Die.new(sides: sides.to_i, explodes: type == 'e') }
+  SYMBOLS = {
+    d:  :standard,
+    df: :fudge,
+    f:  :fudge,
+    e:  :exploding
+  }
+
+  CLASSES = {
+    fudge:     DMTool::FudgeDie,
+    standard:  DMTool::Die,
+    exploding: DMTool::Die
+  }
+
+  def parse_string
+    num_str, type_str, sides_str = regex.match(string).captures
+    num_str = 1 if num_str == ''
+    @number = num_str.to_i
+    @sides = sides_str.to_i
+    @type =  SYMBOLS.fetch(type_str.downcase.to_sym)
   end
 
   def validate_format!
@@ -19,7 +44,7 @@ class DMTool::Parser::DiceString
   end
 
   def regex
-    /(\d*)([de])(\d+)/
+    /^(\d*)(d|e|f|df)(\d*)$/i
   end
 
 end
