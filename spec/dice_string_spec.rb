@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 def it_understands(dice_string)
-  it "doesn't raise an error on #{dice_string}'" do
+  it "doesn't raise an error on '#{dice_string}'" do
     expect { DMTool::Parser::DiceString.new(dice_string) }.to_not raise_error
   end
 end

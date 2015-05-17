@@ -10,6 +10,12 @@ def it_rolls(dice_string, opts)
   end
 end
 
+def it_understands(input_string)
+  it "doesn't raise an error on '#{input_string}'" do
+    expect { parser.parse(input_string) }.to_not raise_error
+  end
+end
+
 describe DMTool::Parser do
   let(:parser) { DMTool::Parser.new }
   describe '#parse!' do
@@ -36,6 +42,11 @@ describe DMTool::Parser do
     it 'raises an error when it doesn\'t understand' do
       expect { parser.parse!('eat 3d6') }.to raise_error(ParserError)
     end
+
+    it_understands('roll 2d6')
+    it_understands('raw 2dF')
+    it_understands('roll 3e8')
+    it_understands('roll 3e8, reroll 1')
   end
 
   describe '#roll' do
