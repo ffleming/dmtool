@@ -1,11 +1,15 @@
 #!/usr/bin/env ruby
 require 'dmtool'
+trap 'SIGINT' do
+  exit
+end
 
 parser = DMTool::Parser.new
 print 'dmtool > '
 while str = gets.chomp rescue ''
+  break if str.blank?
   begin
-    puts parser.parse(str)
+    puts parser.parse(str).inspect
   rescue => e
     puts "#{e.class} #{e.message}"
   end
