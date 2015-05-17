@@ -10,7 +10,7 @@ class DMTool::Parser::DiceString
     opts = {
       fudge:      nil,
       standard:  { sides: sides },
-      exploding: { sides: sides, exploding: true }
+      exploding: { sides: sides, explodes: true }
     }
     options = opts[type]
     (1..number).map { CLASSES[type].new(options) }

@@ -1,5 +1,15 @@
 require 'spec_helper'
 
+def it_rolls(dice_string, opts)
+  min = opts.fetch(:min, nil) || opts.fetch(:between)
+  max = opts.fetch(:max, nil) || opts.fetch(:and)
+  it "'#{dice_string}' should roll between #{min} and #{max}" do
+    100.times do
+      expect(parser.roll dice_string).to be_between(min, max).inclusive
+    end
+  end
+end
+
 describe DMTool::Parser do
   let(:parser) { DMTool::Parser.new }
   describe '#parse!' do
@@ -40,6 +50,12 @@ describe DMTool::Parser do
     it 'raises an error when it doesn\'t understand' do
       expect { parser.roll('dogsandcats')}.to raise_error(ParserError)
     end
+
+    it_rolls 'd2', between: 1, and: 2
+    it_rolls '2d6', between: 2, and: 12
+    it_rolls 'd2-2', between: -1, and: 0
+    it_rolls '2d6+10', between: 12, and: 22
+    it_rolls '100d20+1000000', between: 1000020, and: 1002000
   end
 
   describe '#raw' do
