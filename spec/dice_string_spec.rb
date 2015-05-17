@@ -25,5 +25,6 @@ describe DMTool::Parser::DiceString do
   it_understands 'dice string', '4f'
   it_understands 'dice string', '2F'
   it_understands 'dice string', '5dF'
+  it_understands 'dice string', '5d6+2'
 
 end

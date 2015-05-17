@@ -13,6 +13,16 @@ describe DMTool::Parser do
       parser.parse!('roll 2d6')
     end
 
+    it 'calls :raw when told to raw' do
+      expect(parser).to receive(:raw)
+      parser.parse!('raw 3d6')
+    end
+
+    it 'exits when told to :exit' do
+      expect(parser).to receive(:exit)
+      parser.parse!('exit')
+    end
+
     it 'raises an error when it doesn\'t understand' do
       expect { parser.parse!('eat 3d6') }.to raise_error(ParserError)
     end
@@ -24,15 +34,29 @@ describe DMTool::Parser do
     end
 
     it 'produces an Array of values' do
-      expect(parser.roll('3d6')).to be_an Array
-    end
-
-    it 'defaults to 1 if number of dice is not specified' do
-      expect(parser.roll('d6').length).to eq 1
+      expect(parser.roll('3d6')).to be_a Fixnum
     end
 
     it 'raises an error when it doesn\'t understand' do
       expect { parser.roll('dogsandcats')}.to raise_error(ParserError)
+    end
+  end
+
+  describe '#raw' do
+    it 'responds to :raw' do
+      expect(parser.respond_to? :raw).to eq true
+    end
+
+    it 'produces an Array of values' do
+      expect(parser.raw('3d6')).to be_an Array
+    end
+
+    it 'defaults to 1 if number of dice is not specified' do
+      expect(parser.raw('d6').length).to eq 1
+    end
+
+    it 'raises an error when it doesn\'t understand' do
+      expect { parser.raw('dogsandcats')}.to raise_error(ParserError)
     end
   end
 end

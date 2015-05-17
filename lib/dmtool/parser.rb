@@ -6,16 +6,26 @@ class DMTool::Parser
 
   def parse!(input)
     history.push input
-    command, options = input.split(/ /, 2)
+    command, remainder = input.split(/ /, 2)
     case command
     when 'roll'
-      roll options
+      roll remainder
+    when 'raw'
+      raw remainder
+    when 'exit'
+      exit
     else
       raise ParserError.new "Command #{command} not found"
     end
   end
 
   def roll(dice_string)
+    dice = DMTool::Parser::DiceString.new(dice_string)
+    result = DMTool::Roller.sum(*dice.dice)
+    dice.modifier.call(result)
+  end
+
+  def raw(dice_string)
     dice = DMTool::Parser::DiceString.new(dice_string)
     DMTool::Roller.roll(*dice.dice)
   end

@@ -1,5 +1,5 @@
 class DMTool::Parser::DiceString
-  attr_reader :string, :type, :number, :sides
+  attr_reader :string, :type, :number, :sides, :modifier
   def initialize(string)
     @string = string
     validate_format!
@@ -32,11 +32,31 @@ class DMTool::Parser::DiceString
   }
 
   def parse_string
-    num_str, type_str, sides_str = regex.match(string).captures
-    num_str = 1 if num_str == ''
-    @number = num_str.to_i
-    @sides = sides_str.to_i
-    @type =  SYMBOLS.fetch(type_str.downcase.to_sym)
+    num_str, type_str, sides_str, mod_string = regex.match(string).captures
+    @number   = number_from num_str
+    @sides    = sides_from sides_str
+    @type     = type_from type_str
+    @modifier = modifier_from mod_string
+  end
+
+  def number_from(string)
+    return 1 if string.blank?
+    string.to_i
+  end
+
+  def sides_from(string)
+    string.to_i
+  end
+
+  def type_from(string)
+    SYMBOLS.fetch(string.downcase.to_sym)
+  end
+
+  def modifier_from(string)
+    return Proc.new { |arg| arg } if string.blank?
+    method = string[0].to_sym
+    mod    = string[1..-1].to_i
+    Proc.new { |arg| arg.send(method, mod) }
   end
 
   def validate_format!
@@ -44,7 +64,7 @@ class DMTool::Parser::DiceString
   end
 
   def regex
-    /^(\d*)(d|e|f|df)(\d*)$/i
+    /^(\d*)(d|e|f|df)(\d*)([-+]\d+)?$/i
   end
 
 end

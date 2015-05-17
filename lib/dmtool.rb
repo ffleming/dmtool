@@ -10,3 +10,6 @@ end
 
 require 'pry'
 require 'byebug'
+require 'pry-byebug'
+require 'active_support'
+require 'active_support/core_ext'

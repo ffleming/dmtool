@@ -3,9 +3,12 @@ require 'dmtool'
 
 parser = DMTool::Parser.new
 print 'dmtool > '
-while str = gets.chomp
-  break if str == ''
-  puts parser.parse(str)
+while str = gets.chomp rescue ''
+  begin
+    puts parser.parse(str)
+  rescue => e
+    puts "#{e.class} #{e.message}"
+  end
   print 'dmtool > '
 end
 
