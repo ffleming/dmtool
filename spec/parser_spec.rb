@@ -1,17 +1,27 @@
 require 'spec_helper'
 
 def it_rolls(dice_string, opts)
-  min = opts[:min] || opts.fetch(:between)
-  max = opts[:max] || opts.fetch(:and)
-  it "'#{dice_string}' should roll between #{min} and #{max}" do
+  range = opts[:in] || raise(ArgumentError.new("Couldn't figure out how to delegate"))
+
+  it "'#{dice_string}' should roll in #{range}" do
     100.times do
-      expect(parser.roll dice_string).to be_between(min, max).inclusive
+      expect(parser.roll dice_string).to be_in range
+    end
+  end
+end
+
+def parsing(roll_string, never_results_in:)
+  range = never_results_in
+  range = range..range if range.is_a?(Fixnum)
+  it "'#{roll_string}' should not roll in #{range}" do
+    100.times do
+      expect(parser.parse roll_string).to_not be_in range
     end
   end
 end
 
 def a_raw_roll_of(dice_string, opts)
-  expected_length = opts[:expected_length] || opts.fetch(:contains)
+  expected_length = opts[:expected_length] || opts.fetch(:is_of_length)
   it "raw output of '#{dice_string}' should give #{expected_length} results" do
     100.times do
       expect(parser.raw(dice_string).length).to eq expected_length
@@ -56,6 +66,9 @@ describe DMTool::Parser do
     it_understands('raw 2dF')
     it_understands('roll 3e8')
     it_understands('roll 3e8, reroll 1')
+
+    parsing 'roll d6, reroll 1', never_results_in: 1
+    parsing 'roll d6, reroll 1-2', never_results_in: 1..2
   end
 
   describe '#roll' do
@@ -71,14 +84,14 @@ describe DMTool::Parser do
       expect { parser.roll('dogsandcats')}.to raise_error(ParserError)
     end
 
-    it_rolls 'd2', between: 1, and: 2
-    it_rolls '2d6', between: 2, and: 12
-    it_rolls 'd2-2', between: -1, and: 0
-    it_rolls '2d6+10', between: 12, and: 22
-    it_rolls '100d20+1000000', between: 1000020, and: 1002000
-    it_rolls 'dF', between: -1, and: 1
-    it_rolls 'F', between: -1, and: 1
-    it_rolls '2F', between: -2, and: 2
+    it_rolls 'd2', in: 1..2
+    it_rolls '2d6', in: 2..12
+    it_rolls 'd2-2', in: -1..0
+    it_rolls '2d6+10', in: 12..22
+    it_rolls '100d20+1000000', in: 1000020..1002000
+    it_rolls 'dF', in: -1..1
+    it_rolls 'F', in: -1..1
+    it_rolls '2F', in: -2..2
   end
 
   describe '#raw' do
@@ -98,10 +111,10 @@ describe DMTool::Parser do
       expect { parser.raw('dogsandcats')}.to raise_error(ParserError)
     end
 
-    a_raw_roll_of '2d6', contains: 2
-    a_raw_roll_of '6d6', contains: 6
-    a_raw_roll_of '6dF', contains: 6
-    a_raw_roll_of 'f', contains: 1
+    a_raw_roll_of '2d6', is_of_length: 2
+    a_raw_roll_of '6d6', is_of_length: 6
+    a_raw_roll_of '6dF', is_of_length: 6
+    a_raw_roll_of 'f', is_of_length: 1
 
   end
 end

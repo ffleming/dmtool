@@ -23,7 +23,6 @@ class DMTool::Parser
   def roll(dice_string, directives_string=nil)
     directives = directives_from(directives_string)
     dice = DMTool::Parser::DiceString.new(dice_string)
-
     result = DMTool::Roller.sum(dice.dice, directives)
     result = dice.modifier.call(result)
   end

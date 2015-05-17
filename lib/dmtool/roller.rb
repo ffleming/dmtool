@@ -5,12 +5,11 @@ module DMTool::Roller
         directive.process(ret)
       end
     end
-    # binding.pry
     ret_val
     # dice.map(&:roll)
   end
 
   def self.sum(dice, directives)
-    roll(dice, directives).map(&:value).inject(:+)
+    roll(dice, directives).map(&:value).inject(DMTool::Result::NilResult, :+)
   end
 end

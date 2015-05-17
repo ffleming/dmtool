@@ -24,17 +24,28 @@ class DMTool::Parser::DieDirective
   def proc_from(text)
     keyword, remainder = text.split(/ /)
     raise DirectiveError.new("Invalid directive: #{text}") if keyword.blank? || remainder.blank?
-
-    method = METHODS.fetch(keyword.to_sym)
-
-    # raise DirectiveError.new("Invalid directive: #{text}")
+    method = METHODS.fetch(keyword.to_sym, nil)
+    raise DirectiveError.new("Invalid directive: #{text}") if method.nil?
+    method
   end
 
-  def self.reroll(die, on:)
-    min, max = on.split('-').map(&:to_i)
-    max = min if max.nil?
-    (min..max).include? result
-
+  def self.reroll
+    Proc.new do |die, opts|
+      on = opts.fetch :on
+      min, max = on.split('-').map(&:to_i)
+      max = min if max.nil?
+      die.roll while (min..max).include? die.value
+    end
   end
+
+  def self.roll
+    Proc.new do |die|
+      die.roll
+    end
+  end
+  METHODS = {
+    reroll: DMTool::Parser::DieDirective.reroll,
+    nil:    DMTool::Parser::DieDirective.roll
+  }
 
 end
