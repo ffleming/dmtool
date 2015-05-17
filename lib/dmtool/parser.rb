@@ -6,8 +6,8 @@ class DMTool::Parser
 
   def parse!(input)
     history.push input
-    command, remainder = input.split(/ /, 2)
-    dice_string, directives_string = remainder.to_s.split(',', 2)
+    command, remainder = input.split(/ /, 2).map(&:prep)
+    dice_string, directives_string = remainder.to_s.split(',', 2).map(&:prep)
     case command
     when 'roll'
       roll dice_string, directives_string

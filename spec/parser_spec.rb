@@ -1,11 +1,20 @@
 require 'spec_helper'
 
 def it_rolls(dice_string, opts)
-  min = opts.fetch(:min, nil) || opts.fetch(:between)
-  max = opts.fetch(:max, nil) || opts.fetch(:and)
+  min = opts[:min] || opts.fetch(:between)
+  max = opts[:max] || opts.fetch(:and)
   it "'#{dice_string}' should roll between #{min} and #{max}" do
     100.times do
       expect(parser.roll dice_string).to be_between(min, max).inclusive
+    end
+  end
+end
+
+def a_raw_roll_of(dice_string, opts)
+  expected_length = opts[:expected_length] || opts.fetch(:contains)
+  it "raw output of '#{dice_string}' should give #{expected_length} results" do
+    100.times do
+      expect(parser.raw(dice_string).length).to eq expected_length
     end
   end
 end
@@ -67,6 +76,9 @@ describe DMTool::Parser do
     it_rolls 'd2-2', between: -1, and: 0
     it_rolls '2d6+10', between: 12, and: 22
     it_rolls '100d20+1000000', between: 1000020, and: 1002000
+    it_rolls 'dF', between: -1, and: 1
+    it_rolls 'F', between: -1, and: 1
+    it_rolls '2F', between: -2, and: 2
   end
 
   describe '#raw' do
@@ -85,5 +97,11 @@ describe DMTool::Parser do
     it 'raises an error when it doesn\'t understand' do
       expect { parser.raw('dogsandcats')}.to raise_error(ParserError)
     end
+
+    a_raw_roll_of '2d6', contains: 2
+    a_raw_roll_of '6d6', contains: 6
+    a_raw_roll_of '6dF', contains: 6
+    a_raw_roll_of 'f', contains: 1
+
   end
 end

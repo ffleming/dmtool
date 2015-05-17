@@ -26,10 +26,11 @@ def opts_from_cli
   options
 end
 
-options = opts_from_cli
+def results_from(options)
+  parser = DMTool::Parser.new
+  input = ARGV.join(' ')
+  return "[#{parser.raw(input).join(', ')}]" if options[:raw]
+  parser.roll(input)
+end
 
-input = ARGV.join(' ')
-parser = DMTool::Parser.new
-result = options[:raw] ? parser.raw(input) : parser.roll(input)
-
-pp result
+puts results_from(opts_from_cli)

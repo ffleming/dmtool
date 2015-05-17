@@ -44,14 +44,6 @@ class DMTool::Result
     self.to_i <=> other.to_i
   end
 
-  def +(other)
-    self.to_i + other.to_i
-  end
-
-  def inspect
-    to_s
-  end
-
   alias success? success
   alias failure? failure
   alias critical? critical
