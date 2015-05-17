@@ -41,7 +41,4 @@ class DMTool::Parser
     directives = directives_string.to_s.split ','
     directives.map! { |str| DMTool::Parser::Directive.new(str) }
   end
-
-  def dice_from(dice_string)
-  end
 end
