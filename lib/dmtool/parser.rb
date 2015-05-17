@@ -20,17 +20,18 @@ class DMTool::Parser
     end
   end
 
-  def roll(dice_string, directives_string='')
-    dice = DMTool::Parser::DiceString.new(dice_string)
+  def roll(dice_string, directives_string=nil)
     directives = directives_from(directives_string)
-    result = DMTool::Roller.sum(*dice.dice)
+    dice = DMTool::Parser::DiceString.new(dice_string)
+
+    result = DMTool::Roller.sum(dice.dice, directives)
     result = dice.modifier.call(result)
   end
 
-  def raw(dice_string, directives_string='')
+  def raw(dice_string, directives_string=nil)
     dice = DMTool::Parser::DiceString.new(dice_string)
     directives = directives_from(directives_string)
-    DMTool::Roller.roll(*dice.dice)
+    DMTool::Roller.roll(dice.dice, directives)
   end
 
   alias parse parse!
@@ -38,7 +39,8 @@ class DMTool::Parser
   private
 
   def directives_from(directives_string)
-    directives = directives_string.to_s.split ','
-    directives.map! { |str| DMTool::Parser::Directive.new(str) }
+    directives_string = 'nil' if directives_string.blank?
+    directives = directives_string.split ','
+    directives.map { |str| DMTool::Parser::DieDirective.new(str) }
   end
 end

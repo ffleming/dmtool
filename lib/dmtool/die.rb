@@ -8,6 +8,10 @@ class DMTool::Die
     @history = []
   end
 
+  def value
+    @history.last
+  end
+
   def roll
     result = rand_roll
     result += rand_roll while explodes? && result % sides == 0

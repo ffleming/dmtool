@@ -1,9 +1,16 @@
 module DMTool::Roller
-  def self.roll(*dice)
-    dice.map(&:roll)
+  def self.roll(dice, directives)
+    ret_val = dice.map do |die|
+      directives.each_with_object(die) do |directive, ret|
+        directive.process(ret)
+      end
+    end
+    # binding.pry
+    ret_val
+    # dice.map(&:roll)
   end
 
-  def self.sum(*dice)
-    roll(*dice).map(&:to_i).inject(:+)
+  def self.sum(dice, directives)
+    roll(dice, directives).map(&:value).inject(:+)
   end
 end

@@ -11,5 +11,9 @@ class DMTool::FudgeDie
     result
   end
 
+  def value
+    history.last
+  end
+
   alias roll! roll
 end
