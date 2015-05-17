@@ -1,4 +1,5 @@
 require 'core_extensions/string/prep'
+require 'dmtool/version'
 require 'dmtool/result'
 require 'dmtool/errors'
 require 'dmtool/die'

@@ -68,6 +68,14 @@ describe DMTool::Result::Success do
   it 'should symbolize to :success' do
     expect(subject.to_sym).to eq :success
   end
+
+  it 'should be able to be added to a Fixnum' do
+    expect(0 + subject).to eq(1)
+  end
+
+  it 'should be able to be subtracted from a Fixnum' do
+    expect(0 - subject).to eq(-1)
+  end
 end
 
 describe DMTool::Result::Failure do
@@ -76,6 +84,14 @@ describe DMTool::Result::Failure do
 
   it 'should symbolize to :failure' do
     expect(subject.to_sym).to eq :failure
+  end
+
+  it 'should be able to be added to a Fixnum' do
+    expect(0 + subject).to eq(-1)
+  end
+
+  it 'should be able to be subtracted from a Fixnum' do
+    expect(0 - subject).to eq(1)
   end
 end
 
@@ -89,6 +105,14 @@ describe DMTool::Result::NilResult do
   it 'should symbolize to :nil_result' do
     expect(subject.to_sym).to eq :nil_result
   end
+
+  it 'should be able to be added to a Fixnum' do
+    expect(0 + subject).to eq(0)
+  end
+
+  it 'should be able to be subtracted from a Fixnum' do
+    expect(0 - subject).to eq(0)
+  end
 end
 
 describe DMTool::Result::CriticalSuccess do
@@ -100,6 +124,14 @@ describe DMTool::Result::CriticalSuccess do
 
   it 'should symbolize to :critical_success' do
     expect(subject.to_sym).to eq :critical_success
+  end
+
+  it 'should be able to be added to a Fixnum' do
+    expect(0 + subject).to eq(2)
+  end
+
+  it 'should be able to be subtracted from a Fixnum' do
+    expect(0 - subject).to eq(-2)
   end
 end
 
@@ -113,5 +145,12 @@ describe DMTool::Result::CriticalFailure do
   it 'should symbolize to :critical_failure' do
     expect(subject.to_sym).to eq :critical_failure
   end
-end
 
+  it 'should be able to be added to a Fixnum' do
+    expect(0 + subject).to eq(-2)
+  end
+
+  it 'should be able to be subtracted from a Fixnum' do
+    expect(0 - subject).to eq(2)
+  end
+end

@@ -40,6 +40,10 @@ class DMTool::Result
     val
   end
 
+  def coerce(other)
+    [other, self.to_i]
+  end
+
   def +(other)
     self.to_i + other.to_i
   end
