@@ -22,7 +22,6 @@ class DMTool::Parser::Directive
 
   def proc_from(text)
     keyword, remainder = text.split(/ /)
-    binding.pry
     raise DirectiveError.new("Invalid directive: #{text}") if keyword.blank? || remainder.blank?
   end
 end
