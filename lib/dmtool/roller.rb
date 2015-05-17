@@ -4,6 +4,6 @@ module DMTool::Roller
   end
 
   def self.sum(*dice)
-    roll(*dice).inject(:+)
+    roll(*dice).map(&:to_i).inject(:+)
   end
 end
