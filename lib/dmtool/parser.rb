@@ -38,7 +38,7 @@ class DMTool::Parser
   private
 
   def directives_from(directives_string)
-    directives_string = 'nil' if directives_string.blank?
+    directives_string = 'roll' if directives_string.blank?
     directives = directives_string.split ','
     directives.map { |str| DMTool::Parser::DieDirective.new(str) }
   end

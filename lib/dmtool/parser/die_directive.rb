@@ -1,40 +1,35 @@
 class DMTool::Parser::DieDirective
   attr_reader :text
 
-  def initialize(text='')
+  def initialize(text='roll')
     @text = text
-    @proc = Proc.new { |die| die.roll }
-    @complete = false
+    build_proc_from text
   end
 
   def process(die)
-    @proc.call(die)
-  end
-
-  def to_s
-    raise NotImplementedError.new "to_s in Directive"
-  end
-
-  def to_i
-    raise NotImplementedError.new "to_i in Directive"
+    @proc.call(die, proc_opts)
   end
 
   private
 
-  def proc_from(text)
+  attr_reader :proc, :proc_opts
+
+  def build_proc_from(text)
     keyword, remainder = text.split(/ /)
-    raise DirectiveError.new("Invalid directive: #{text}") if keyword.blank? || remainder.blank?
+    raise DirectiveError.new("Invalid directive: #{text}") if keyword.blank?
     method = METHODS.fetch(keyword.to_sym, nil)
     raise DirectiveError.new("Invalid directive: #{text}") if method.nil?
-    method
+    @proc = method
+    @proc_opts = remainder
   end
 
   def self.reroll
-    Proc.new do |die, opts|
-      on = opts.fetch :on
+    Proc.new do |die, on|
       min, max = on.split('-').map(&:to_i)
       max = min if max.nil?
+      die.roll
       die.roll while (min..max).include? die.value
+      die.value
     end
   end
 
@@ -45,7 +40,7 @@ class DMTool::Parser::DieDirective
   end
   METHODS = {
     reroll: DMTool::Parser::DieDirective.reroll,
-    nil:    DMTool::Parser::DieDirective.roll
+    roll:    DMTool::Parser::DieDirective.roll
   }
 
 end

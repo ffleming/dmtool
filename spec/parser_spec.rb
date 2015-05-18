@@ -69,6 +69,7 @@ describe DMTool::Parser do
 
     parsing 'roll d6, reroll 1', never_results_in: 1
     parsing 'roll d6, reroll 1-2', never_results_in: 1..2
+    parsing 'roll d4, reroll 1-3', never_results_in: 1..3
   end
 
   describe '#roll' do

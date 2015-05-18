@@ -6,10 +6,9 @@ module DMTool::Roller
       end
     end
     ret_val
-    # dice.map(&:roll)
   end
 
   def self.sum(dice, directives)
-    roll(dice, directives).map(&:value).inject(DMTool::Result::NilResult, :+)
+    roll(dice, directives).map(&:value).inject(0, :+)
   end
 end
