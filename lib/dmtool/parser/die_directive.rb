@@ -38,9 +38,27 @@ class DMTool::Parser::DieDirective
       die.roll
     end
   end
+
+  def self.explode
+    Proc.new do |die|
+      result = die.roll
+      result += die.roll while result % die.sides == 0
+    end
+  end
+
+  def self.fudge
+    Proc.new do |die|
+      index = die.roll % 3
+       res = [DMTool::Result::Success, DMTool::Result::NilResult, DMTool::Result::Failure][index]
+       die.history.push res
+    end
+  end
+
   METHODS = {
-    reroll: DMTool::Parser::DieDirective.reroll,
-    roll:    DMTool::Parser::DieDirective.roll
+    reroll:  DMTool::Parser::DieDirective.reroll,
+    roll:    DMTool::Parser::DieDirective.roll,
+    explode: DMTool::Parser::DieDirective.explode,
+    fudge:   DMTool::Parser::DieDirective.fudge
   }
 
 end

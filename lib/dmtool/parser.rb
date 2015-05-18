@@ -21,15 +21,15 @@ class DMTool::Parser
   end
 
   def roll(dice_string, directives_string=nil)
-    directives = directives_from(directives_string)
     dice = DMTool::Parser::DiceString.new(dice_string)
+    directives = directives_from(directives_string, dice)
     result = DMTool::Roller.sum(dice.dice, directives)
     result = dice.modifier.call(result)
   end
 
   def raw(dice_string, directives_string=nil)
     dice = DMTool::Parser::DiceString.new(dice_string)
-    directives = directives_from(directives_string)
+    directives = directives_from(directives_string, dice)
     DMTool::Roller.roll(dice.dice, directives)
   end
 
@@ -37,9 +37,12 @@ class DMTool::Parser
 
   private
 
-  def directives_from(directives_string)
-    directives_string = 'roll' if directives_string.blank?
+  def directives_from(directives_string, dice)
+    directives_string = '' if directives_string.nil?
     directives = directives_string.split ','
-    directives.map { |str| DMTool::Parser::DieDirective.new(str) }
+    directives.map! { |str| DMTool::Parser::DieDirective.new(str) }
+    directives += dice.directives
+    directives.select! {|d| d.text != 'roll' } if directives.length > 1
+    directives
   end
 end

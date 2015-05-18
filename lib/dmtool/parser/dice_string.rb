@@ -7,13 +7,11 @@ class DMTool::Parser::DiceString
   end
 
   def dice
-    opts = {
-      fudge:      nil,
-      standard:  { sides: sides },
-      exploding: { sides: sides, explodes: true }
-    }
-    options = opts[type]
-    (1..number).map { CLASSES[type].new(options) }
+    (1..number).map { DMTool::Die.new(sides: sides)}
+  end
+
+  def directives
+    [DIRECTIVES[type]].compact
   end
 
   private
@@ -25,17 +23,17 @@ class DMTool::Parser::DiceString
     e:  :exploding
   }
 
-  CLASSES = {
-    fudge:     DMTool::FudgeDie,
-    standard:  DMTool::Die,
-    exploding: DMTool::Die
+  DIRECTIVES = {
+    fudge: DMTool::Parser::DieDirective.new('fudge'),
+    standard: DMTool::Parser::DieDirective.new('roll'),
+    exploding: DMTool::Parser::DieDirective.new('explode')
   }
 
   def parse_string
     num_str, type_str, sides_str, mod_string = regex.match(string).captures
     @number   = number_from num_str
-    @sides    = sides_from sides_str
     @type     = type_from type_str
+    @sides    = sides_from sides_str
     @modifier = modifier_from mod_string
   end
 
@@ -45,6 +43,7 @@ class DMTool::Parser::DiceString
   end
 
   def sides_from(string)
+    return 6 if type == :fudge
     string.to_i
   end
 

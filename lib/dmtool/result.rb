@@ -1,8 +1,6 @@
 class DMTool::Result
   include Comparable
 
-  private
-
   def initialize(success: false, failure: false, critical: false, symbol: :nil_result)
     @success = success
     @failure = failure
