@@ -89,7 +89,7 @@ describe DMTool::Parser do
     it_rolls '2d6', in: 2..12
     it_rolls 'd2-2', in: -1..0
     it_rolls '2d6+10', in: 12..22
-    it_rolls '100d20+1000000', in: 1000020..1002000
+    it_rolls '100d20+1000000', in: 1000100..1002000
     it_rolls 'dF', in: -1..1
     it_rolls 'F', in: -1..1
     it_rolls '2F', in: -2..2

@@ -8,23 +8,21 @@ class DMTool::Parser
     history.push input
     command, remainder = input.split(/ /, 2).map(&:prep)
     dice_string, directives_string = remainder.to_s.split(',', 2).map(&:prep)
-    case command
-    when 'roll'
-      roll dice_string, directives_string
-    when 'raw'
-      raw dice_string, directives_string
-    when 'exit'
-      exit
-    else
-      raise ParserError.new "Command #{command} not found"
-    end
+
+    return(send(command, dice_string, directives_string)) if respond_to?(command, true)
+    return(send("cmd_#{command}", dice_string, directives_string)) if respond_to?("cmd_#{command}", true)
+    raise ParserError.new "Command #{command} not found"
+  end
+
+  def cmd_help(*args)
+    'help'
   end
 
   def roll(dice_string, directives_string=nil)
     dice = DMTool::Parser::DiceString.new(dice_string)
     directives = directives_from(directives_string, dice)
     result = DMTool::Roller.sum(dice.dice, directives)
-    result = dice.modifier.call(result)
+    dice.modifier.call(result)
   end
 
   def raw(dice_string, directives_string=nil)
@@ -34,6 +32,8 @@ class DMTool::Parser
   end
 
   alias parse parse!
+  alias cmd_raw raw
+  alias cmd_roll roll
 
   private
 
