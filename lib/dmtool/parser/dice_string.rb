@@ -63,7 +63,7 @@ class DMTool::Parser::DiceString
   end
 
   def regex
-    /^(\d*)(d|e|f|df)(\d*)([-+]\d+)?$/i
+    @regex ||= /^(\d*)(d|e|f|df)(\d*)([-+]\d+)?$/i
   end
 
 end

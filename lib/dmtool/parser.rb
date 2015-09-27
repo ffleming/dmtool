@@ -15,7 +15,7 @@ class DMTool::Parser
   end
 
   def cmd_help(*args)
-    'help'
+    'This is help text'
   end
 
   def roll(dice_string, directives_string=nil)
