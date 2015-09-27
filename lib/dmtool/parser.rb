@@ -9,33 +9,58 @@ class DMTool::Parser
     command, remainder = input.split(/ /, 2).map(&:prep)
     dice_string, directives_string = remainder.to_s.split(',', 2).map(&:prep)
 
-    return(send(command, dice_string, directives_string)) if respond_to?(command, true)
-    return(send("cmd_#{command}", dice_string, directives_string)) if respond_to?("cmd_#{command}", true)
+    if respond_to?("cmd_#{command}", true)
+      ret = send("cmd_#{command}", dice_string, directives_string)
+      ret = "[#{ret.join ', '}]" if ret.is_a? Array
+      return "#{ret}"
+    end
     raise ParserError.new "Command #{command} not found"
   end
 
-  def cmd_help(*args)
-    'This is help text'
-  end
+  alias parse parse!
 
-  def roll(dice_string, directives_string=nil)
+  private
+
+  def cmd_roll(dice_string, directives_string=nil)
     dice = DMTool::Parser::DiceString.new(dice_string)
     directives = directives_from(directives_string, dice)
     result = DMTool::Roller.sum(dice.dice, directives)
     dice.modifier.call(result)
   end
 
-  def raw(dice_string, directives_string=nil)
+  def cmd_raw(dice_string, directives_string=nil)
     dice = DMTool::Parser::DiceString.new(dice_string)
     directives = directives_from(directives_string, dice)
-    DMTool::Roller.roll(dice.dice, directives)
+    DMTool::Roller.roll(dice.dice, directives).map(&:value)
   end
 
-  alias parse parse!
-  alias cmd_raw raw
-  alias cmd_roll roll
+  def cmd_help(*args)
+    <<-EOS
+    dmtool> <command> <dice>, <directives>
 
-  private
+    <commands>
+      roll: sums output
+      raw:  displays individual die values (ignores +/- modifiers)
+
+    <dice>
+      e.g. 3d6 for three six-sided dice
+      3d6+2 to add 2 to the result of rollng 3d6
+      3df for 3 Fudge dice
+
+    <directives>
+
+    Examples:
+      roll 2d6
+      roll d20+5
+      roll d10-2
+      roll 3d6, reroll 1-2
+    EOS
+  end
+
+  def cmd_exit(*args)
+    puts 'Goodbye'
+    exit
+  end
 
   def directives_from(directives_string, dice)
     directives_string = '' if directives_string.nil?

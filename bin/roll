@@ -29,8 +29,8 @@ end
 def results_from(options)
   parser = DMTool::Parser.new
   input = ARGV.join(' ')
-  return "[#{parser.raw(input).join(', ')}]" if options[:raw]
-  parser.roll(input)
+  command = options[:raw] ? 'raw' : 'roll'
+  parser.parse("#{command} #{input}")
 end
 
 puts results_from(opts_from_cli)

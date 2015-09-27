@@ -5,7 +5,7 @@ def it_rolls(dice_string, opts)
 
   it "'#{dice_string}' should roll in #{range}" do
     100.times do
-      expect(parser.roll dice_string).to be_in range
+      expect(parser.send :cmd_roll, dice_string).to be_in range
     end
   end
 end
@@ -24,7 +24,7 @@ def a_raw_roll_of(dice_string, opts)
   expected_length = opts[:expected_length] || opts.fetch(:is_of_length)
   it "raw output of '#{dice_string}' should give #{expected_length} results" do
     100.times do
-      expect(parser.raw(dice_string).length).to eq expected_length
+      expect(parser.send(:cmd_raw, dice_string).length).to eq expected_length
     end
   end
 end
@@ -44,18 +44,23 @@ describe DMTool::Parser do
     end
 
     it 'calls :roll when told to roll' do
-      expect(parser).to receive(:roll)
+      expect(parser).to receive(:cmd_roll)
       parser.parse!('roll 2d6')
     end
 
     it 'calls :raw when told to raw' do
-      expect(parser).to receive(:raw)
+      expect(parser).to receive(:cmd_raw)
       parser.parse!('raw 3d6')
     end
 
     it 'exits when told to :exit' do
       expect(parser).to receive(:exit)
       parser.parse!('exit')
+    end
+
+    it 'displays help when told to :help' do
+      expect(parser.parse('help').length).to be > 10
+      parser.parse!('help')
     end
 
     it 'raises an error when it doesn\'t understand' do
@@ -72,17 +77,17 @@ describe DMTool::Parser do
     parsing 'roll d4, reroll 1-3', never_results_in: 1..3
   end
 
-  describe '#roll' do
-    it 'responds to :roll' do
-      expect(parser.respond_to? :roll).to eq true
+  describe '#cmd_roll' do
+    it 'responds to :cmd_roll' do
+      expect(parser.respond_to? :cmd_roll, true).to eq true
     end
 
-    it 'produces an Array of values' do
-      expect(parser.roll('3d6')).to be_a Fixnum
+    it 'produces a Fixnum' do
+      expect(parser.send :cmd_roll, '3d6').to be_a Fixnum
     end
 
     it 'raises an error when it doesn\'t understand' do
-      expect { parser.roll('dogsandcats')}.to raise_error(ParserError)
+      expect { parser.send :cmd_roll, 'dogsandcats' }.to raise_error(ParserError)
     end
 
     it_rolls 'd2', in: 1..2
@@ -95,21 +100,21 @@ describe DMTool::Parser do
     it_rolls '2F', in: -2..2
   end
 
-  describe '#raw' do
-    it 'responds to :raw' do
-      expect(parser.respond_to? :raw).to eq true
+  describe '#cmd_raw' do
+    it 'responds to :cmd_raw' do
+      expect(parser.respond_to? :cmd_raw, true).to eq true
     end
 
     it 'produces an Array of values' do
-      expect(parser.raw('3d6')).to be_an Array
+      expect(parser.send :cmd_raw, '3d6').to be_an Array
     end
 
     it 'defaults to 1 if number of dice is not specified' do
-      expect(parser.raw('d6').length).to eq 1
+      expect(parser.send(:cmd_raw, 'd6').length).to eq 1
     end
 
     it 'raises an error when it doesn\'t understand' do
-      expect { parser.raw('dogsandcats')}.to raise_error(ParserError)
+      expect { parser.send :cmd_raw, 'dogsandcats' }.to raise_error(ParserError)
     end
 
     a_raw_roll_of '2d6', is_of_length: 2

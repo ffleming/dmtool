@@ -55,8 +55,5 @@ module DMTool::CLI
       options
     end
 
-    def cmd_help
-      puts "woof"
-    end
   end
 end
