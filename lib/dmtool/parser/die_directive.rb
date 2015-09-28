@@ -35,7 +35,7 @@ class DMTool::Parser::DieDirective
 
   def self.roll
     Proc.new do |die|
-      die.roll
+      die.history.push die.roll
     end
   end
 
@@ -43,6 +43,7 @@ class DMTool::Parser::DieDirective
     Proc.new do |die|
       result = die.roll
       result += die.roll while result % die.sides == 0
+      die.history.push result
     end
   end
 
