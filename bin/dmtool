@@ -1,4 +1,31 @@
 #!/usr/bin/env ruby
 require 'dmtool'
 
+trap 'SIGINT' do
+  exit
+end
+
+def parse_opts!
+  options = {}
+  opt_parser = OptionParser.new do |opts|
+    opts.program_name = "dmtool"
+    opts.banner = "#{opts.program_name} [options]"
+    opts.on('-v', '--version', 'Print version information') do
+      puts "#{opts.program_name} #{DMTool::VERSION}"
+      exit true
+    end
+    opts.on('-h', '--help', 'Display this screen') do
+      puts opts
+      exit true
+    end
+  end
+  begin
+    opt_parser.parse!
+  rescue OptionParser::InvalidOption => e
+    puts e.message
+    exit false
+  end
+end
+
+parse_opts!
 DMTool::CLI.start
