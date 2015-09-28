@@ -11,9 +11,7 @@ set_code_climate_key!
 
 require 'simplecov'
 require 'codeclimate-test-reporter'
-SimpleCov.start do
-  add_filter '/spec/'
-end
+SimpleCov.start
 CodeClimate::TestReporter.start
 require 'dmtool'
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)

@@ -1,0 +1,7 @@
+engines:
+  rubocop:
+    enabled: true
+ratings:
+  - "**.rb"
+exclude_paths:
+- "lib/dmtool/cli.rb"

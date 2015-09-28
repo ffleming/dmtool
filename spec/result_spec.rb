@@ -50,6 +50,10 @@ describe DMTool::Result do
     end
   end
 
+  it 'can be added to itself and yield a Fixnum' do
+    expect(DMTool::Result::CriticalSuccess + DMTool::Result::CriticalSuccess).to be_a Fixnum
+  end
+
   it 'should assign integer values correctly' do
     expect((crit_constants + non_crit_constants).shuffle.sort).to eq [
       DMTool::Result::CriticalFailure,
