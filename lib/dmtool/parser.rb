@@ -36,6 +36,7 @@ class DMTool::Parser
 
   def cmd_help(*args)
     <<-EOS
+    dmtool v#{DMTool::VERSION} help
     dmtool> <command> <dice>, <directives>
 
     <commands>
@@ -58,7 +59,6 @@ class DMTool::Parser
   end
 
   def cmd_exit(*args)
-    puts 'Goodbye'
     exit
   end
 
