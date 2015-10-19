@@ -4,6 +4,7 @@ require 'pry-byebug'
 require 'active_support'
 require 'active_support/core_ext'
 require 'optparse'
+require 'readline'
 
 require 'core_extensions/string/prep'
 require 'dmtool/version'

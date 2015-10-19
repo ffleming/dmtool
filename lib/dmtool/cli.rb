@@ -17,18 +17,15 @@ module DMTool::CLI
     end
 
     def ui_loop
-      prompt do
-        while str = input.gets.chomp rescue ''
-          break if str.blank?
-          begin
-            output.puts @parser.parse(str)
-          rescue SystemExit => e
-            output.puts 'Goodbye'
-            break
-          rescue => e
-            output.puts "#{e.class} #{e.message}"
-          end
-          prompt
+      while str = Readline.readline("dmtool> ", true)
+        break if str.blank?
+        begin
+          output.puts @parser.parse(str)
+        rescue SystemExit => e
+          output.puts 'Goodbye'
+          break
+        rescue => e
+          output.puts "#{e.class} #{e.message}"
         end
       end
     end
